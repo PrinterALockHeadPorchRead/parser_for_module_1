@@ -7,3 +7,4 @@ pytesseract==0.3.13
 python_docx==1.1.2
 Requests==2.32.3
 tabula_py==2.10.0
+lxml
