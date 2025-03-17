@@ -37,7 +37,7 @@ python main.py
 Для сборки Docker-образа выполните команду:
 
 ```bash
-docker build -t semantic-parser 
+docker build -t semantic-parser .
 ```
 
 ### Запуск контейнера
