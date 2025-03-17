@@ -10,4 +10,4 @@ tabula_py==2.10.0
 lxml
 pytest
 pytest-cov
-requests_mock
+requests-mock
