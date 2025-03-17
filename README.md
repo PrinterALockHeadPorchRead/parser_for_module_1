@@ -37,7 +37,7 @@ python main.py
 Для сборки Docker-образа выполните команду:
 
 ```bash
-docker build -t kercilla-semantic-parser .
+docker build -t semantic-parser 
 ```
 
 ### Запуск контейнера
@@ -45,7 +45,7 @@ docker build -t kercilla-semantic-parser .
 После успешной сборки образа запустите контейнер с помощью команды:
 
 ```bash
-docker run -it kercilla-semantic-parser
+docker run -it semantic-parser
 ```
 
 ## Тестирование
