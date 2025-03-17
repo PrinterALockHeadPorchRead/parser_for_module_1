@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 from urllib.parse import urlparse
+from typing import Union
 
 from parsers.parser_html import WebPageProcessor 
 from parsers.parser_pdf import PDFProcessor  
@@ -9,12 +10,12 @@ from parsers.parser_doc import DOCProcessor
 from parsers.parser_docx import DOCXProcessor 
 
 class FileProcessor:
-    def __init__(self, input_path):
+    def __init__(self, input_path: str) -> None:
         self.input_path = input_path
         self.is_url = self._is_valid_url(input_path)
         self.processor = self._get_processor()
 
-    def _is_valid_url(self, path):
+    def _is_valid_url(self, path: str) -> bool:
         """Проверка существования URL"""
         try:
             result = urlparse(path)
@@ -22,7 +23,9 @@ class FileProcessor:
         except:
             return False
 
-    def _get_processor(self):
+    def _get_processor(self) -> Union[
+        WebPageProcessor, PDFProcessor, DJVUProcessor, DOCProcessor, DOCXProcessor
+    ]:
         """Выбор обработчика в зависимости от формата входа"""
         if self.is_url:
             return WebPageProcessor(self.input_path)
@@ -45,7 +48,7 @@ class FileProcessor:
         else:
             raise ValueError(f"Формат {ext} не подходит")
 
-    def process(self):
+    def process(self) -> None:
         """Собственно парсинг"""
         if self.processor:
             print(f"Обработка: {self.input_path}")
