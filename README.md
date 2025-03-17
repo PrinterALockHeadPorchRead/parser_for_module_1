@@ -11,6 +11,7 @@
 - **Dockerfile**: Файл для создания Docker-образа проекта.
 - **.dockerignore**: Файл, указывающий, какие файлы и директории следует игнорировать при сборке Docker-образа.
 - **tests**: Директория с тестами для проверки функциональности проекта.
+- **test_files**: Тестовые файлы.
 
 ## Запуск проекта
 
@@ -27,7 +28,7 @@ pip install -r requirements.txt
 Для запуска семантического парсера используйте команду:
 
 ```bash
-python main.py
+python3 main.py "path/to/your/file"
 ```
 
 ## Развертывание в Docker
@@ -42,10 +43,10 @@ docker build -t semantic-parser .
 
 ### Запуск контейнера
 
-После успешной сборки образа запустите контейнер с помощью команды:
+После успешной сборки образа запустите контейнер с помощью команды (замените путь к файлу на свой):
 
 ```bash
-docker run -it semantic-parser
+docker run -it semantic-parser python3 main.py "/app/test_files/test_file.pdf"
 ```
 
 ## Тестирование
