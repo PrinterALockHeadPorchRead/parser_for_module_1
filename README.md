@@ -55,7 +55,5 @@ docker run -it semantic-parser
 ```bash
 python -m unittest
 ```
-## Лицензия
 
-Этот проект распространяется под лицензией MIT. Подробнее см. в файле LICENSE.
 
