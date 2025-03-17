@@ -2,6 +2,7 @@ import subprocess
 import pytesseract
 from PIL import Image
 import os
+from subprocess import CalledProcessError
 
 class DJVUProcessor:
     def __init__(self, file_path: str, lang: str = "rus+eng") -> None:
@@ -39,8 +40,16 @@ class DJVUProcessor:
                 encoding="utf-8"
             )
             return result.stdout.strip()
+        except CalledProcessError as e:
+            print(f"Ошибка выполнения djvutxt: {e.stderr.decode()}")
+            return ""
+            
+        except UnicodeDecodeError:
+            print("Ошибка кодировки: не удалось декодировать вывод djvutxt")
+            return ""
+        
         except Exception as e:
-            print(f"Ошибка извлечения текста: {e}")
+            print(f"Непредвиденная ошибка извлечения текста: {str(e)}")
             return ""
 
     def _extract_text_ocr(self) -> str:
@@ -52,12 +61,25 @@ class DJVUProcessor:
             subprocess.run(["ddjvu", "-format=tiff", self.file_path, temp_image], check=True)
             text = pytesseract.image_to_string(Image.open(temp_image), lang=self.lang)
             return text.strip()
-        except Exception as e:
-            print(f"OCR ошибка: {e}")
+        except (PermissionError, IOError) as e:
+            print(f"Ошибка доступа к файлам: {str(e)}")
             return ""
+        except CalledProcessError as e:
+            print(f"Ошибка конвертации в TIFF: {e.stderr.decode()}")
+            return ""           
+        except pytesseract.TesseractError as e:
+            print(f"Ошибка OCR: {e}")
+            return ""
+        except Exception as e:
+            print(f"Непредвиденная ошибка OCR: {str(e)}")
+            return ""
+        
         finally:
             if os.path.exists(temp_image):
-                os.remove(temp_image)
+                try:
+                    os.remove(temp_image)
+                except PermissionError:
+                    print("Предупреждение: не удалось удалить временный файл")
 
     def _extract_metadata(self) -> str:
         """Получение метаданных"""
@@ -71,10 +93,16 @@ class DJVUProcessor:
                 encoding="utf-8"
             )
             return result.stdout
-        except Exception as e:
-            print(f"Ошибка извлечения метаданных: {e}")
+        except CalledProcessError as e:
+            print(f"Ошибка чтения метаданных: {e.stderr.decode()}")
             return ""
-
+        except UnicodeDecodeError:
+            print("Ошибка кодировки: не удалось декодировать метаданные")
+            return ""
+        except Exception as e:
+            print(f"Непредвиденная ошибка метаданных: {str(e)}")
+            return ""
+        
     def print_results(self) -> None:
         print(f"Статус: {'Валиден' if self.is_valid else 'Ошибка зависимостей'}")
         
