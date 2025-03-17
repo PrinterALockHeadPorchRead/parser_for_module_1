@@ -1,4 +1,4 @@
-# Модуль1: Semantic Parser
+# Модуль 1: Semantic Parser
 
 ## Описание проекта
 
