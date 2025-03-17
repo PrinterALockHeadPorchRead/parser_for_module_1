@@ -2,16 +2,18 @@ import PyPDF2
 from pdf2image import convert_from_path
 import pytesseract
 import tabula
+import pandas as pd
+from typing import List
 
 class PDFProcessor:
-    def __init__(self, file_path):
+    def __init__(self, file_path: str) -> None:
         self.file_path = file_path
         self.is_valid = self._validate_pdf_syntax()
         self.text_content = self._extract_text()
         self.ocr_text = self._extract_text_from_images()
         self.tables = self._extract_tables()
 
-    def _validate_pdf_syntax(self):
+    def _validate_pdf_syntax(self) -> bool:
         """Проверка целостности"""
         try:
             with open(self.file_path, "rb") as f:
@@ -25,7 +27,7 @@ class PDFProcessor:
             print(f"Ошибка структуры PDF: {e}")
             return False
 
-    def _extract_text(self):
+    def _extract_text(self) -> str:
         """Извлечение текста"""
         if not self.is_valid:
             return ""
@@ -36,7 +38,7 @@ class PDFProcessor:
                 text += page.extract_text() or ""
         return text.strip()
 
-    def _extract_text_from_images(self, dpi=300, lang="rus+eng"):
+    def _extract_text_from_images(self, dpi: int = 300, lang: str = "rus+eng") -> str:
         """Извлечение такста (OCR)"""
         if not self.is_valid:
             return ""
@@ -45,22 +47,23 @@ class PDFProcessor:
             pytesseract.image_to_string(img, lang=lang) for img in images
         ).strip()
 
-    def _extract_tables(self):
+    def _extract_tables(self) -> List[pd.DataFrame]:
         """Извлечение таблиц"""
         if not self.is_valid:
             return []
         try:
-            return tabula.read_pdf(
+            tables: List[pd.DataFrame] = tabula.read_pdf(
                 self.file_path,
                 pages="all",
                 multiple_tables=True,
                 java_options="-Dfile.encoding=UTF8"
-            )
+            ) 
+            return tables
         except Exception as e:
             print(f"Ошибка извлечения таблиц: {e}")
             return []
 
-    def print_results(self):
+    def print_results(self) -> None:
         print(f"Статус: {'Валиден' if self.is_valid else 'Ошибка структуры'}")
         
         print("\nТекст документа:")

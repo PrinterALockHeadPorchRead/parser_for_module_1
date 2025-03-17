@@ -4,7 +4,7 @@ from PIL import Image
 import os
 
 class DJVUProcessor:
-    def __init__(self, file_path, lang="rus+eng"):
+    def __init__(self, file_path: str, lang: str = "rus+eng") -> None:
         self.file_path = file_path
         self.lang = lang
         self.is_valid = self._validate_dependencies()
@@ -13,7 +13,7 @@ class DJVUProcessor:
         self.metadata = self._extract_metadata()
         self.image_count = 0
 
-    def _validate_dependencies(self):
+    def _validate_dependencies(self) -> bool:
         """Проверка наличия необходимых утилит"""
         required_tools = ["djvutxt", "ddjvu"]
         missing = []
@@ -27,7 +27,7 @@ class DJVUProcessor:
             return False
         return True
 
-    def _extract_text(self):
+    def _extract_text(self) -> str:
         """Извлечение текста"""
         if not self.is_valid:
             return ""
@@ -43,7 +43,7 @@ class DJVUProcessor:
             print(f"Ошибка извлечения текста: {e}")
             return ""
 
-    def _extract_text_ocr(self):
+    def _extract_text_ocr(self) -> str:
         """Извлечение текста с изображений"""
         if not self.is_valid:
             return ""
@@ -59,7 +59,7 @@ class DJVUProcessor:
             if os.path.exists(temp_image):
                 os.remove(temp_image)
 
-    def _extract_metadata(self):
+    def _extract_metadata(self) -> str:
         """Получение метаданных"""
         if not self.is_valid:
             return ""
@@ -75,7 +75,7 @@ class DJVUProcessor:
             print(f"Ошибка извлечения метаданных: {e}")
             return ""
 
-    def print_results(self):
+    def print_results(self) -> None:
         print(f"Статус: {'Валиден' if self.is_valid else 'Ошибка зависимостей'}")
         
         print("\nТекст документа:")
